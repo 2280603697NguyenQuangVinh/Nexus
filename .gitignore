@@ -1,0 +1,45 @@
+# Node modules
+**/node_modules/
+
+# Build outputs
+**/dist/
+**/build/
+**/coverage/
+
+# Environment files
+.env
+.env.*.local
+**/.env
+
+# Vite / cache
+.vite
+.cache
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+*.iml
+
+# Socket / runtime
+pids
+*.pid
+*.seed
+
+# Optional: ignore local test artifacts
+*.local
+
