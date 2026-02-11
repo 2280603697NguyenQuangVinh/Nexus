@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Media } from './media.entity';
+import { UserService } from '../user/user.service';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -12,6 +13,7 @@ export class MediaService {
     constructor(
         @InjectRepository(Media)
         private mediaRepository: Repository<Media>,
+        private readonly userService: UserService,
     ) {
         // Ensure upload directory exists
         if (!fs.existsSync(this.uploadDir)) {
@@ -19,6 +21,7 @@ export class MediaService {
         }
     }
 
+    // Legacy local-disk upload (still available if you need it)
     async saveFile(file: Express.Multer.File, uploadedBy: string): Promise<Media> {
         const filename = `${Date.now()}-${file.originalname}`;
         const filepath = path.join(this.uploadDir, filename);
@@ -40,7 +43,24 @@ export class MediaService {
         return this.mediaRepository.save(media);
     }
 
-    async findOne(id: string): Promise<Media> {
+    // New method used by MediaController when client uploads via Firebase Storage
+    async createFromClientBody(firebaseUser: any, dto: any): Promise<Media> {
+        // Map firebase user -> app user (PostgreSQL)
+        const user = await this.userService.findOrCreateFromFirebase(firebaseUser);
+
+        const media = this.mediaRepository.create({
+            filename: dto.fileName,
+            originalName: dto.fileName,
+            mimeType: dto.mimeType,
+            size: dto.fileSize,
+            url: dto.downloadUrl,
+            uploadedBy: user.id,
+        });
+
+        return this.mediaRepository.save(media);
+    }
+
+    async findOne(id: string): Promise<Media | null> {
         return this.mediaRepository.findOne({ where: { id } });
     }
 

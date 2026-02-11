@@ -1,28 +1,34 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+// users/user.entity.ts
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Guild } from '../guild/guild.entity';
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-    @Column({ unique: true })
-    username: string;
+  @Column({ unique: true })
+  firebase_uid!: string;
 
-    @Column({ unique: true })
-    email: string;
+  @Column({ unique: true })
+  username!: string;
 
-    @Column()
-    password: string;
+  @Column({ unique: true })
+  email!: string;
 
-    @Column({ nullable: true })
-    avatar: string;
+  // Optional hashed password for classic email/password auth
+  @Column({ nullable: true })
+  password!: string | null;
 
-    @Column({ default: 'offline' })
-    status: string; // online, offline, away, dnd
+  @Column({ nullable: true })
+  avatar_url!: string | null;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column({ nullable: true })
+  status!: string | null;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @Column({ type: 'timestamp', default: () => 'NOW()' })
+  created_at!: Date;
+
+  @OneToMany(() => Guild, (g) => g.owner)
+  ownedGuilds!: Guild[];
 }

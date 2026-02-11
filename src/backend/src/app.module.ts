@@ -28,7 +28,16 @@ import { WebSocketGatewayModule } from './gateway/realtime-gateway/websocket-gat
             isGlobal: true,
             envFilePath: '.env',
         }),
-
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'postgres',
+            password: 'QuangVinh1410',
+            database: 'nexus',
+            entities: [__dirname + '/**/*.entity.{ts,js}'],
+            synchronize: false, // dùng schema đã tạo bằng SQL
+          }),
         // Event system (in-memory)
         EventEmitterModule.forRoot(),
 

@@ -1,53 +1,27 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../user/user.entity';
+import { Channel } from '../channel/channel.entity';
 
 @Entity('guilds')
 export class Guild {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-    @Column()
-    name: string;
+  @Column()
+  name!: string;
 
-    @Column({ nullable: true })
-    icon: string;
+  @ManyToOne(() => User, (u) => u.ownedGuilds)
+  owner!: User;
 
-    @Column()
-    ownerId: string;
+  @Column()
+  owner_id!: string;
 
-    @ManyToOne(() => User)
-    @JoinColumn({ name: 'ownerId' })
-    owner: User;
+  @Column({ nullable: true })
+  icon_url!: string;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column({ type: 'timestamp', default: () => 'NOW()' })
+  created_at!: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
-}
-
-@Entity('guild_members')
-export class GuildMember {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-
-    @Column()
-    guildId: string;
-
-    @Column()
-    userId: string;
-
-    @Column({ default: 'member' })
-    role: string;
-
-    @ManyToOne(() => Guild)
-    @JoinColumn({ name: 'guildId' })
-    guild: Guild;
-
-    @ManyToOne(() => User)
-    @JoinColumn({ name: 'userId' })
-    user: User;
-
-    @CreateDateColumn()
-    joinedAt: Date;
+  @OneToMany(() => Channel, (c) => c.guild)
+  channels!: Channel[];
 }
