@@ -1,4 +1,4 @@
-import { auth } from './firebaseClient';
+import { auth } from './firebase';
 
 export async function authorizedFetch(
   input: RequestInfo | URL,
@@ -20,5 +20,3 @@ export async function authorizedFetch(
     },
   });
 }
-
-

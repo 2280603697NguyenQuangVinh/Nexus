@@ -1,6 +1,6 @@
-import { storage } from './firebaseClient';
+import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { authorizedFetch } from './authorizedFetch';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 export async function uploadToChannel(
   file: File,
@@ -29,5 +29,3 @@ export async function uploadToChannel(
 
   return res.json();
 }
-
-
